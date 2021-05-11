@@ -27,7 +27,7 @@
 static int
 xrsadecrypt(Conv *c)
 {
-	char *txt, buf[4096], *role;
+	char *txt, buf[16384], *role;
 	int n, ret;
 	mpint *m, *mm;
 	Key *k;

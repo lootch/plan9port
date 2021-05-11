@@ -5,7 +5,8 @@
 int
 _attrfmt(Fmt *fmt)
 {
-	char *b, buf[1024], *ebuf;
+	//	This is 16 times as big as before, that may be overkill
+	char *b, buf[16384], *ebuf;
 	Attr *a;
 
 	ebuf = buf+sizeof buf;

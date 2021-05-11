@@ -149,7 +149,7 @@ xopenfd(char *name, int mode)
 void
 xread(int argc, char **argv)
 {
-	char buf[4096];
+	char buf[16384];
 	int n;
 	CFid *fid;
 
@@ -174,7 +174,7 @@ xread(int argc, char **argv)
 void
 xreadfd(int argc, char **argv)
 {
-	char buf[4096];
+	char buf[16384];
 	int n;
 	int fd;
 
@@ -198,7 +198,7 @@ xreadfd(int argc, char **argv)
 void
 xwrite(int argc, char **argv)
 {
-	char buf[4096];
+	char buf[16384];
 	int n, did;
 	CFid *fid;
 	Biobuf *b;
@@ -252,7 +252,7 @@ xwrite(int argc, char **argv)
 void
 xwritefd(int argc, char **argv)
 {
-	char buf[4096];
+	char buf[16384];
 	int n;
 	int fd;
 
@@ -301,7 +301,7 @@ xstat(int argc, char **argv)
 void
 xrdwr(int argc, char **argv)
 {
-	char buf[4096];
+	char buf[16384];
 	char *p;
 	int n;
 	CFid *fid;
@@ -391,7 +391,7 @@ void
 rdcon(void *v)
 {
 	int n;
-	char buf[4096];
+	char buf[16384];
 	CFid *fid;
 
 	fid = v;
@@ -409,7 +409,7 @@ rdcon(void *v)
 void
 xcon(int argc, char **argv)
 {
-	char buf[4096], *r, *w, *e;
+	char buf[16384], *r, *w, *e;
 	int n, nocr;
 	CFid *fid;
 
@@ -500,7 +500,7 @@ char *dot[] = { "." };
 void
 xls(int argc, char **argv)
 {
-	char *err, *name, *xname, *f[4], buf[4096];
+	char *err, *name, *xname, *f[4], buf[16384];
 	int i, j, l, sort;
 	int lflag, dflag, tflag, n, len[4];
 	Dir *d;

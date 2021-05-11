@@ -166,7 +166,7 @@ static int
 keylist(int i, char *a, uint nn)
 {
 	int n;
-	char buf[4096];
+	char buf[16384];
 	Key *k;
 
 	if(i >= ring.nkey)
