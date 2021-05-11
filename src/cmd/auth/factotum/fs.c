@@ -35,11 +35,11 @@ static struct
 	ulong perm;
 } dirtab[] = {
 	/* positions of confirm and needkey known below */
-	"confirm",		Qconfirm,		0600|DMEXCL,
+	"confirm",	Qconfirm,	0600|DMEXCL,
 	"needkey",	Qneedkey,	0600|DMEXCL,
-	"ctl",			Qctl,			0600,
+	"ctl",		Qctl,		0600,
 	"rpc",		Qrpc,		0666,
-	"proto",		Qprotolist, 0444,
+	"proto",	Qprotolist, 0444,
 	"log",		Qlog,		0600|DMEXCL,
 	"conv", 	Qconv,		0400
 };
@@ -538,3 +538,4 @@ fsinit0(void)
 	fs.destroyfid = fssendclunk;
 	fs.start = fsstart;
 }
+
