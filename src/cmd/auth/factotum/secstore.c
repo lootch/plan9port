@@ -105,7 +105,7 @@ struct SConn{
 /* error convention: write !message in-band */
 #define readstr secstore_readstr
 static void writerr(SConn*, char*);
-static int readstr(SConn*, char*);  /* call with buf of size Maxmsg+1 */
+static int readstr(SConn*, char*);	/* call with buf of size Maxmsg+1 */
 	/* returns -1 upon error, with error message in buf */
 
 typedef struct ConnState {
@@ -116,7 +116,7 @@ typedef struct ConnState {
 
 #undef SS
 typedef struct SS {
-	int fd;		/* file descriptor for read/write of encrypted data */
+	int fd; 	/* file descriptor for read/write of encrypted data */
 	int alg;	/* if nonzero, "alg sha rc4_128" */
 	ConnState in, out;
 } SS;
@@ -276,7 +276,7 @@ newSConn(int fd)
 		return nil;
 	ss = (SS*)emalloc(sizeof(*ss));
 	conn = (SConn*)emalloc(sizeof(*conn));
-	ss->fd  = fd;
+	ss->fd	= fd;
 	ss->alg = 0;
 	conn->chan = (void*)ss;
 	conn->secretlen = SHA1dlen;
@@ -503,7 +503,7 @@ shorthash(char *mess, char *C, char *S, char *m, char *mu, char *sigma, char *Hi
 /*	pass is the user's passphrase */
 /* On output, session secret has been set in conn */
 /*	(unless return code is negative, which means failure). */
-/*    If pS is not nil, it is set to the (alloc'd) name the server calls itself. */
+/*	  If pS is not nil, it is set to the (alloc'd) name the server calls itself. */
 static int
 PAKclient(SConn *conn, char *C, char *pass, char **pS)
 {

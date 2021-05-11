@@ -253,7 +253,7 @@ rsaclose(Key *k)
 static Role
 rsaroles[] =
 {
-	"sign",	xrsasign,
+	"sign", xrsasign,
 	"verify",	xrsasign,	/* public operation */
 	"decrypt",	xrsadecrypt,
 	"encrypt",	xrsadecrypt,	/* public operation */

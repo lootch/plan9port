@@ -19,8 +19,8 @@ addattr(Attr *a, char *fmt, ...)
 }
 
 /*
- *  add attributes in list b to list a.  If any attributes are in
- *  both lists, replace those in a by those in b.
+ *	add attributes in list b to list a.  If any attributes are in
+ *	both lists, replace those in a by those in b.
  */
 Attr*
 addattrs(Attr *a, Attr *b)
@@ -187,7 +187,7 @@ matchattr(Attr *pat, Attr *a0, Attr *a1)
 		if(ignoreattr(pat->name))
 			type = AttrDefault;
 		switch(type){
-		case AttrQuery:		/* name=something be present */
+		case AttrQuery: 	/* name=something be present */
 			if(!hasname(a0, a1, pat->name))
 				return 0;
 			break;

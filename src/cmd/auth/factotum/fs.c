@@ -39,9 +39,9 @@ static struct
 	"needkey",	Qneedkey,	0600|DMEXCL,
 	"ctl",			Qctl,			0600,
 	"rpc",		Qrpc,		0666,
-	"proto",		Qprotolist,	0444,
+	"proto",		Qprotolist, 0444,
 	"log",		Qlog,		0600|DMEXCL,
-	"conv",		Qconv,		0400
+	"conv", 	Qconv,		0400
 };
 
 static void
@@ -138,7 +138,7 @@ fsstat(Req *r)
 		respond(r, "file not found");
 		break;
 	}
-    Break2:
+	Break2:
 	respond(r, nil);
 }
 
