@@ -35,13 +35,13 @@ static struct
 	ulong perm;
 } dirtab[] = {
 	/* positions of confirm and needkey known below */
-	"confirm",		Qconfirm,		0600|DMEXCL,
+	"confirm",	Qconfirm,	0600|DMEXCL,
 	"needkey",	Qneedkey,	0600|DMEXCL,
-	"ctl",			Qctl,			0600,
+	"ctl",		Qctl,		0600,
 	"rpc",		Qrpc,		0666,
-	"proto",		Qprotolist,	0444,
+	"proto",	Qprotolist, 0444,
 	"log",		Qlog,		0600|DMEXCL,
-	"conv",		Qconv,		0400
+	"conv", 	Qconv,		0400
 };
 
 static void
@@ -138,7 +138,7 @@ fsstat(Req *r)
 		respond(r, "file not found");
 		break;
 	}
-    Break2:
+	Break2:
 	respond(r, nil);
 }
 
@@ -166,7 +166,7 @@ static int
 keylist(int i, char *a, uint nn)
 {
 	int n;
-	char buf[4096];
+	char buf[16384];
 	Key *k;
 
 	if(i >= ring.nkey)
@@ -538,3 +538,4 @@ fsinit0(void)
 	fs.destroyfid = fssendclunk;
 	fs.start = fsstart;
 }
+

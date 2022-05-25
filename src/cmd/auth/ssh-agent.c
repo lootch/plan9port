@@ -879,7 +879,8 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 	RSApub *rsa;
 	DSApub *dsa;
 	char buf[4096];
-	uchar digest[SHA1dlen];
+	//	uchar digest[SHA1dlen];
+	uchar digest[SHA2_256dlen];
 
 	s = getstr(mkey);
 	if(strcmp(s, "ssh-rsa") == 0){
@@ -914,8 +915,9 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 		auth_freerpc(rpc);
 		return -1;
 	}
-	sha1(mdata->bp, mdata->ep-mdata->bp, digest, nil);
-	if(auth_rpc(rpc, "write", digest, SHA1dlen) != ARok){
+	//	sha1(mdata->bp, mdata->ep-mdata->bp, digest, nil);
+	sha2_256(mdata->bp, mdata->ep-mdata->bp, digest, nil);
+	if(auth_rpc(rpc, "write", digest, SHA2_256dlen) != ARok){
 		fprint(2, "ssh-agent: auth 'write in sign failed: %r\n");
 		goto Die;
 	}
@@ -973,7 +975,7 @@ runmsg(Aconn *a)
 			goto Failure;
 		}
 		if(chatty)
-			fprint(2, "request identities\n", nk);
+			fprint(2, "request %d identities\n", nk);
 		reply(a, &m);
 		break;
 
