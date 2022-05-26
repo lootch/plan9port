@@ -158,6 +158,7 @@ bin/rc
 bin/read
 bin/readcons
 bin/resample
+bin/rio
 bin/rm
 bin/rsa2csr
 bin/rsa2pub
@@ -246,7 +247,9 @@ bin/vmount0
 bin/vnfs
 bin/wc
 bin/win
+bin/winwatch
 bin/xd
+bin/xshove
 bin/yacc
 bin/yuv
 bin/zcat
