@@ -9,7 +9,7 @@
  *	write msg
  *	read encrypt/decrypt(msg)
  *
- * Sign (PKCS #1 using hash=sha1 or hash=md5)
+ * Sign (PKCS #1 using hash=sha1, sha2x or hash=md5)
  *	start n=xxx ek=xxx
  *	write hash(msg)
  *	read signature(hash(msg))
@@ -94,7 +94,7 @@ xrsasign(Conv *c)
 	DigestAlg *hashfn;
 	Key *k;
 	RSApriv *key;
-	uchar sig[1024], digest[64];
+	uchar sig[16384], digest[256];
 	char *sig2;
 
 	ret = -1;
@@ -103,23 +103,56 @@ xrsasign(Conv *c)
 	c->state = "keylookup";
 	k = keylookup("%A", c->attr);
 	if(k == nil)
-		goto out;
+		return ret;
 
 	/* make sure have private half if needed */
 	key = k->priv;
 	role = strfindattr(c->attr, "role");
 	if(strcmp(role, "sign") == 0 && !key->c2){
+		keyclose(k);
 		werrstr("missing private half of key -- cannot sign");
-		goto out;
+		return ret;
 	}
 
 	/* get hash type from key */
+	// Awkward...
+	// sha1 - obsolete
+	// sha2_256
+	// sha2_512
+	// md5 and md2 (deprecated?)
 	hash = strfindattr(k->attr, "hash");
+fprint(2, "hash: %s\n", hash ? hash : "nil");
 	if(hash == nil)
 		hash = "sha1";
 	if(strcmp(hash, "sha1") == 0){
 		hashfn = sha1;
 		dlen = SHA1dlen;
+	}else if(strncmp(hash, "rsa-sha2-", 8) == 0){
+		char *hlen = strdup(hash + 8);
+
+		if (*hlen == '\0')
+			hlen = "512";
+		switch(atoi(hlen)){
+		default:
+			werrstr("unknown SHA2 hash length %s", hlen);
+			goto out;
+		case 224:
+			dlen = SHA2_224dlen;
+			hashfn = sha2_224;
+			break;
+		case 256:
+			dlen = SHA2_256dlen;
+			hashfn = sha2_256;
+			break;
+		case 384:
+			dlen = SHA2_384dlen;
+			hashfn = sha2_384;
+			break;
+		case 512:
+			dlen = SHA2_512dlen;
+			hashfn = sha2_512;
+			break;
+		}
 	}else if(strcmp(hash, "md5") == 0){
 		hashfn = md5;
 		dlen = MD5dlen;
@@ -130,6 +163,7 @@ xrsasign(Conv *c)
 
 	/* read hash */
 	c->state = "read hash";
+fprint(2, "readconv(%s - %d\n", c->state, dlen);
 	if((n=convread(c, digest, dlen)) < 0)
 		goto out;
 
