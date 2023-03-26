@@ -814,7 +814,7 @@ static int
 dorsa(Aconn *a, mpint *mod, mpint *exp, mpint *chal, uchar chalbuf[32])
 {
 	AuthRpc *rpc;
-	char buf[4096], *p;
+	char buf[16384], *p;
 	mpint *decr, *unpad;
 
 	USED(exp);
@@ -878,7 +878,7 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 	AuthRpc *rpc;
 	RSApub *rsa;
 	DSApub *dsa;
-	char buf[4096];
+	char buf[16384];
 	//	uchar digest[SHA1dlen];
 	uchar digest[SHA2_256dlen];
 
@@ -918,7 +918,7 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 	//	sha1(mdata->bp, mdata->ep-mdata->bp, digest, nil);
 	sha2_256(mdata->bp, mdata->ep-mdata->bp, digest, nil);
 	if(auth_rpc(rpc, "write", digest, SHA2_256dlen) != ARok){
-		fprint(2, "ssh-agent: auth 'write in sign failed: %r\n");
+		fprint(2, "ssh-agent: auth 'write in sign' failed: %r\n");
 		goto Die;
 	}
 	if(auth_rpc(rpc, "read", nil, 0) != ARok){
