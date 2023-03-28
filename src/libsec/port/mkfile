@@ -64,3 +64,24 @@ HFILES=$PLAN9/include/libsec.h
 
 <$PLAN9/src/mksyslib
 
+egtest: egtest.$O
+	$LD -o $target $prereq
+
+hmactest: hmactest.$O
+	$LD -o $target $prereq
+
+md4test: md4test.$O
+	$LD -o $target $prereq
+
+primetest: primetest.$O
+	$LD -o $target $prereq
+
+smallprimetest: smallprimetest.$O
+	$LD -o $target $prereq
+
+rsatest: rsatest.$O
+	$LD -o $target $prereq
+
+sha2test: sha2test.$O
+	$LD -o $target $prereq
+
