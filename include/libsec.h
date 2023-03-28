@@ -357,6 +357,7 @@ DSApriv*	asn1toDSApriv(uchar*, int);
 typedef struct Thumbprint{
 	struct Thumbprint *next;
 	uchar sha1[SHA1dlen];
+	uchar sha2[SHA2_512dlen];
 } Thumbprint;
 
 typedef struct TLSconn{
