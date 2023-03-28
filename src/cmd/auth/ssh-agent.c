@@ -715,7 +715,11 @@ listkeys(Msg *m, int version)
 			if(version == 1 && strcmp(p, "rsa") == 0 && strcmp(s, "ssh") == 0)
 				if(putrsa1(m, f, nf) >= 0)
 					nk++;
-			if(version == 2 && strcmp(p, "rsa") == 0 && strcmp(s, "ssh-rsa") == 0)
+			if(version == 2 && strcmp(p, "rsa") == 0 && (
+				strcmp(s, "ssh-rsa") == 0 || 
+				strcmp(s, "rsa-sha2-256") == 0 || 
+				strcmp(s, "rsa-sha2-512") == 0 
+				)) 
 				if(putkey2(m, putrsa, f, nf) >= 0)
 					nk++;
 			if(version == 2 && strcmp(p, "dsa") == 0 && strcmp(s, "ssh-dss") == 0)
@@ -814,7 +818,7 @@ static int
 dorsa(Aconn *a, mpint *mod, mpint *exp, mpint *chal, uchar chalbuf[32])
 {
 	AuthRpc *rpc;
-	char buf[4096], *p;
+	char buf[16384], *p;
 	mpint *decr, *unpad;
 
 	USED(exp);
@@ -875,20 +879,34 @@ int
 keysign(Msg *mkey, Msg *mdata, Msg *msig)
 {
 	char *s;
+	int err, bits = 256;
 	AuthRpc *rpc;
 	RSApub *rsa;
 	DSApub *dsa;
-	char buf[4096];
+	char buf[16384];
 	//	uchar digest[SHA1dlen];
-	uchar digest[SHA2_256dlen];
+	uchar digest[SHA2_512dlen];
 
 	s = getstr(mkey);
+fprint(2, "factotum tag: %s\n", s);
 	if(strcmp(s, "ssh-rsa") == 0){
 		rsa = getrsapub(mkey);
 		if(rsa == nil)
 			return -1;
 		snprint(buf, sizeof buf, "proto=rsa service=ssh-rsa role=sign n=%lB ek=%lB",
 			rsa->n, rsa->ek);
+		rsapubfree(rsa);
+	}else if(strncmp(s, "rsa-sha2-", 9) == 0){
+		bits = atoi(s+9);
+fprint(2, "%s becomes %d\n", s, bits);
+		rsa = getrsapub(mkey);
+		if(rsa == nil)
+			return -1;
+		// if(chatty)
+			fprint(2, "proto=rsa service=%.12s role=sign ...\n", s);
+		snprint(buf, sizeof buf,
+			"proto=rsa service=%.12s role=sign n=%lB ek=%lB",
+			s, rsa->n, rsa->ek);
 		rsapubfree(rsa);
 	}else if(strcmp(s, "ssh-dss") == 0){
 		dsa = getdsapub(mkey);
@@ -907,7 +925,7 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 		fprint(2, "ssh-agent: auth_allocrpc: %r\n");
 		return -1;
 	}
-	if(chatty)
+	// if(chatty)
 		fprint(2, "ssh-agent: start %s\n", buf);
 	if(auth_rpc(rpc, "start", buf, strlen(buf)) != ARok){
 		fprint(2, "ssh-agent: auth 'start' failed: %r\n");
@@ -916,9 +934,21 @@ keysign(Msg *mkey, Msg *mdata, Msg *msig)
 		return -1;
 	}
 	//	sha1(mdata->bp, mdata->ep-mdata->bp, digest, nil);
-	sha2_256(mdata->bp, mdata->ep-mdata->bp, digest, nil);
-	if(auth_rpc(rpc, "write", digest, SHA2_256dlen) != ARok){
-		fprint(2, "ssh-agent: auth 'write in sign failed: %r\n");
+	// if(chatty)
+		fprint(2, "ssh-agent: write digest: %s\n", mdata->bp);
+	switch (bits) {
+	default:
+		fprint(2, "ssh-agent: not supported: %d SHA2 bits\n", bits);
+		goto Die;
+	case 256:
+		sha2_256(mdata->bp, mdata->ep-mdata->bp, digest, nil);
+		err = auth_rpc(rpc, "write", digest, SHA2_256dlen);
+	case 512:
+		sha2_512(mdata->bp, mdata->ep-mdata->bp, digest, nil);
+		err = auth_rpc(rpc, "write", digest, SHA2_512dlen);
+	}
+	if (err != ARok){
+		fprint(2, "ssh-agent: auth 'write in sign' failed for %d bits: %r\n", bits);
 		goto Die;
 	}
 	if(auth_rpc(rpc, "read", nil, 0) != ARok){
@@ -939,7 +969,7 @@ runmsg(Aconn *a)
 	char *p;
 	int n, nk, type, rt, vers;
 	mpint *ek, *mod, *chal;
-	uchar sessid[16], chalbuf[32], digest[MD5dlen];
+	uchar sessid[16], chalbuf[32], digest[SHA2_256dlen];
 	uint len, flags;
 	DigestState *s;
 	Msg m, mkey, mdata, msig;

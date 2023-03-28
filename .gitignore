@@ -269,6 +269,11 @@ postscript/font/
 sky/*.scat
 sky/here
 src/**/o.*
+src/libsec/port/hmactest
+src/libsec/port/md4test
+src/libsec/port/primetest
+src/libsec/port/rsatest
+src/libsec/port/sha2test
 src/cmd/awk/y.output
 src/cmd/devdraw/latin1.h
 src/cmd/rc/x.tab.h
@@ -277,3 +282,4 @@ state.journal
 state.old
 unix/*.tgz
 y.tab.[ch]
+
