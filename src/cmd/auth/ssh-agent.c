@@ -934,7 +934,7 @@ fprint(2, "%s becomes %d\n", s, bits);
 		return -1;
 	}
 	//	sha1(mdata->bp, mdata->ep-mdata->bp, digest, nil);
-	// if(chatty)
+	if(chatty)
 		fprint(2, "ssh-agent: write digest: %s\n", mdata->bp);
 	switch (bits) {
 	default:

@@ -121,9 +121,9 @@ xrsasign(Conv *c)
 	// sha2_512
 	// md5 and md2 (deprecated?)
 	hash = strfindattr(k->attr, "hash");
+fprint(2, "hash: %s\n", hash ? hash : "nil");
 	if(hash == nil)
 		hash = "rsa-sha2-256"; // was originally "sha1";
-fprint(2, "hash: %s\n", hash ? hash : "nil");
 	if(strcmp(hash, "sha1") == 0){
 		hashfn = sha1;
 		dlen = SHA1dlen;
